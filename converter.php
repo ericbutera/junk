@@ -12,8 +12,37 @@ $possibilities = array(
     'quoted_printable' => array('quoted_printable_encode', 'quoted_printable_decode'),
     'hash' => array('md5', 'sha1'),
     'base64' => array('base64_encode', 'base64_decode'),
-    'misc' => array('strtoupper', 'strtolower')
+    'misc' => array('strtoupper', 'strtolower', 'str_rot13+', 'str_rot13-')
 );
+
+/**
+* Rotate each string characters by n positions in ASCII table
+* To encode use positive n, to decode - negative.
+* With n = 13 (ROT13), encode and decode n can be positive.
+*
+* @param string $string
+* @param integer $n
+* @return string
+*/
+function rotate($string, $n) {
+    $length = strlen($string);
+    $result = '';
+    for($i = 0; $i < $length; $i++) {
+        $ascii = ord($string{$i});
+        $rotated = $ascii;
+        if ($ascii > 64 && $ascii < 91) {
+            $rotated += $n;
+            $rotated > 90 && $rotated += -90 + 64;
+            $rotated < 65 && $rotated += -64 + 90;
+        } elseif ($ascii > 96 && $ascii < 123) {
+            $rotated += $n;
+            $rotated > 122 && $rotated += -122 + 96;
+            $rotated < 97 && $rotated += -96 + 122;
+        }
+        $result .= chr($rotated);
+    }
+    return $result;
+}
 
 $filters = array();
 foreach ($possibilities as $type => $current) {
@@ -22,8 +51,14 @@ foreach ($possibilities as $type => $current) {
     }
 }
 
-if ($filter && in_array($filter, $filters)) {
-    $output = call_user_func($filter, $input);
+if ($filter) {
+    if ($filter == 'str_rot13+') {
+        $output = rotate($input, 13);
+    } else if ($filter == 'str_rot13-') {
+        $output = rotate($input, -13);
+    } else if (in_array($filter, $filters)) {
+        $output = call_user_func($filter, $input);
+    }
 }
 ?>
 <!DOCTYPE html>
