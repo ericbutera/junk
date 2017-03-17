@@ -20,6 +20,7 @@ $possibilities = array(
 * To encode use positive n, to decode - negative.
 * With n = 13 (ROT13), encode and decode n can be positive.
 *
+* @author http://php.net/manual/en/function.str-rot13.php#75469
 * @param string $string
 * @param integer $n
 * @return string
