@@ -1,5 +1,5 @@
 <?php
-$input = !empty($_REQUEST['input']) ? $_REQUEST['input'] : false;
+$input = !empty($_REQUEST['input']) ? trim($_REQUEST['input']) : false;
 $filter = !empty($_REQUEST['filter']) ? $_REQUEST['filter'] : false;
 $output = false;
 
@@ -11,6 +11,7 @@ $possibilities = array(
     'slashes' => array('addslashes', 'stripslashes'),
     'quoted_printable' => array('quoted_printable_encode', 'quoted_printable_decode'),
     'hash' => array('md5', 'sha1'),
+    'base64' => array('base64_encode', 'base64_decode'),
     'misc' => array('strtoupper', 'strtolower')
 );
 
