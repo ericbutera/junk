@@ -12,6 +12,7 @@ $possibilities = array(
     'quoted_printable' => array('quoted_printable_encode', 'quoted_printable_decode'),
     'hash' => array('md5', 'sha1'),
     'base64' => array('base64_encode', 'base64_decode'),
+    'time' => array('strtotime', 'timestamp2date'),
     'misc' => array('strtoupper', 'strtolower', 'str_rot13+', 'str_rot13-')
 );
 
@@ -25,10 +26,11 @@ $possibilities = array(
 * @param integer $n
 * @return string
 */
-function rotate($string, $n) {
+function rotate($string, $n)
+{
     $length = strlen($string);
     $result = '';
-    for($i = 0; $i < $length; $i++) {
+    for ($i = 0; $i < $length; $i++) {
         $ascii = ord($string{$i});
         $rotated = $ascii;
         if ($ascii > 64 && $ascii < 91) {
@@ -45,6 +47,11 @@ function rotate($string, $n) {
     return $result;
 }
 
+function timestamp2date($str)
+{
+    return date('Y-m-d H:i:s', $str);
+}
+
 $filters = array();
 foreach ($possibilities as $type => $current) {
     foreach ($current as $_filter) {
@@ -55,9 +62,9 @@ foreach ($possibilities as $type => $current) {
 if ($filter) {
     if ($filter == 'str_rot13+') {
         $output = rotate($input, 13);
-    } else if ($filter == 'str_rot13-') {
+    } elseif ($filter == 'str_rot13-') {
         $output = rotate($input, -13);
-    } else if (in_array($filter, $filters)) {
+    } elseif (in_array($filter, $filters)) {
         $output = call_user_func($filter, $input);
     }
 }
@@ -76,7 +83,7 @@ if ($filter) {
 
         <h1>Make a thing another</h1>
 
-        <?php if ($input !== false): ?>
+        <?php if ($input !== false) : ?>
             <h3>Output in pre tag</h3>
             <div style="max-height: 250px; overflow: scroll;">
                 <pre><?= htmlspecialchars($output) ?></pre>
@@ -94,9 +101,9 @@ if ($filter) {
             <div class="form-group">
                 <label for="filter">Filter</label>
                 <select name="filter" id="filter" class="form-control">
-                    <?php foreach ($possibilities as $group => $_filters): ?>
+                    <?php foreach ($possibilities as $group => $_filters) : ?>
                     <optgroup label="<?= htmlspecialchars($group) ?>">
-                        <?php foreach ($_filters as $_filter): ?>
+                        <?php foreach ($_filters as $_filter) : ?>
                             <option value="<?= htmlspecialchars($_filter) ?>" <?= $filter == $_filter ? ' selected' : '' ?>><?= htmlspecialchars($_filter) ?></option>
                         <?php endforeach ?>
                     </optgroup>
